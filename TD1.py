@@ -39,7 +39,7 @@ def occurence(tab):
     n = min(tab)
     print("| VALEUR | OCCURENCE(s) |")
     
-    while n <= max(tab):
+    while n <= max(tab)+1:
         v = 0
         for _ in range(len(tab)):
             if tab[_] == n:

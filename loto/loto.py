@@ -2,11 +2,12 @@
 import numpy as np
 # importer le framework Pandas dans le script python pour exporter en csv
 import pandas as pd
-#import format json
+# import format json
 import json
-#se deplacer dans les fichiers
+# se deplacer dans les fichiers
 from pathlib import Path
-
+# pour iterer des listes dans des listes
+import itertools
 
 
 # création d'une fonction pour le loto
@@ -14,7 +15,7 @@ def jeu_loto():
     # Commence par modifier la graine aléatoire pour qu'elle soit uniforme
     np.random.seed(50)
     # Définie les numéros que le joueur joue pour le(s) tirage(s) et donc reste contant
-    lotoJoueur = [np.random.randint(1, 45) for _ in range(5)]
+    lotoJoueur = [np.random.randint(1, 46) for _ in range(5)]
     # affiche les numéros du joueur
     print(f"\nLes bon numeros du loto sont : {lotoJoueur}")
     listeVT = []
@@ -25,7 +26,7 @@ def jeu_loto():
     for _ in range(nbTirage):
 
         # créer une liste avec les nombres utilisés par le tirage
-        listTirage = [np.random.randint(1, 45) for _ in range(5)]
+        listTirage = [np.random.randint(1, 46) for _ in range(5)]
         # ajout de la liste listeTirage dans la liste listeVT
         listeVT.append(listTirage)
         # cherche les occurences entre les 2 listes avec la fonction trouve_occurences
@@ -49,18 +50,28 @@ def exCsv(liste):
     return df.to_csv(filepath)
 
 
-
 def exJson(liste):
-    
-    df = pd.DataFrame(liste,columns = ['PREMIER','DEXIEME','TROISIEME','QUATRIEME', 'CINQUIEME'])
+
+    df = pd.DataFrame(
+        liste, columns=['PREMIER', 'DEXIEME', 'TROISIEME', 'QUATRIEME', 'CINQUIEME'])
     print(df)
     filepath = Path('loto/exportJSON.json')
     filepath.parent.mkdir(parents=True, exist_ok=True)
     return df.to_json(filepath, orient='columns')
-    
+
+
+def exBinaire(liste):
+    int_array = list(itertools.chain(*liste))
+    binary_lists = [np.binary_repr(x, width=8) for x in int_array]
+    binary_data = "".join(binary_lists)
+    filepath = Path('loto/exportBIN.bin')
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    with open(filepath, "wb") as f:
+        f.write(bytes(binary_data, "latin1"))
+
 
 def exprotation2Formats(liste):
-    return exCsv(liste), exJson(liste)
+    return exCsv(liste), exJson(liste), exBinaire(liste)
 
 
 # créer une fonction qui détermine les occurences entres 2 listes
@@ -77,75 +88,31 @@ def trouve_occurences(liste1, liste2):
     return resultat
 
 
-def triInsersion(lst):
-    for i in range(1, len(lst)):
-        j = i
-        while j > 0 and lst[j] < lst[j-1]:
-            lst[j], lst[j-1] = lst[j-1], lst[j]
-        j -= 1
-    return lst
+def histogramme(tab):
+    tabu = list(itertools.chain(*tab))
+    n = min(tabu)
+    print("| VALEUR | OCCURENCE(s) |")
 
-
-def triCocktail(liste):
-    debut = 0
-    fin = len(liste) - 1
-    while debut < fin:
-        echange = False
-        for _ in range(debut, fin):
-            if liste[_] > liste[_+1]:
-                liste[_], liste[_+1] = liste[_+1], liste[_]
-            echange = True
-        fin -= 1
-        if not echange:
-            break
-        for _ in range(fin-1, debut-1, -1):
-            if liste[_] > liste[_+1]:
-                liste[_], liste[_+1] = liste[_+1], liste[_]
-            echange = True
-        debut += 1
-    return liste
-
-
-def triFusion(lst):
-    # Si la liste ne contient qu'un élément, elle est déjà triée
-    if len(lst) <= 1:
-        return lst
-
-    # Détermine le milieu de la liste
-    mid = len(lst) // 2
-
-    # Tri la première moitié de la liste
-    left = triFusion(lst[:mid])
-
-    # Tri la seconde moitié de la liste
-    right = triFusion(lst[mid:])
-
-    # Fusionne les deux moitiés triées
-    return merge(left, right)
-
-
-def merge(left, right):
-    # Initialise la liste qui contiendra les éléments fusionnés
-    merged = []
-    # Initialise les indices des éléments à comparer dans chaque liste
-    left_index = 0
-    right_index = 0
-    # Tant que les deux listes ne sont pas vides, compare les éléments et ajoute le plus petit à la liste fusionnée
-    while left_index < len(left) and right_index < len(right):
-        if left[left_index] < right[right_index]:
-            merged.append(left[left_index])
-            left_index += 1
+    while n <= max(tabu)+1:
+        v = 0
+        for _ in range(len(tabu)):
+            if tabu[_] == n:
+                v += 1
+            else:
+                continue
+        if v >= 1:
+            print(f"| {n} | {v} |")
         else:
-            merged.append(right[right_index])
-            right_index += 1
-    # Ajoute les éléments restants de la liste la plus longue à la liste fusionnée
-    merged.extend(left[left_index:])
-    merged.extend(right[right_index:])
-    return merged
-
+            pass
+        n += 1
 
 # exécution du jeu avec la liste du joueur en argument créer au début du script
+
+
 def process():
-    exprotation2Formats(jeu_loto())
+    LISTETIR = jeu_loto()
+    exprotation2Formats(LISTETIR)
+    histogramme(LISTETIR)
+
 
 process()
