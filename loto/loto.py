@@ -2,14 +2,12 @@
 import numpy as np
 # importer le framework Pandas dans le script python pour exporter en csv
 import pandas as pd
-# import format json
-import json
 # se deplacer dans les fichiers
 from pathlib import Path
 # pour iterer des listes dans des listes
 import itertools
-#importer matplotlib pour l'histogramme
-import matplotlib as mp
+# importer matplotlib pour l'histogramme
+import matplotlib.pyplot as plt
 
 
 # création d'une fonction pour le loto
@@ -37,8 +35,6 @@ def jeu_loto():
         if len(occurence) == 5:
             # affiche ne numéro du tirage ainsi que l'acclamation
             print(f"\nTirage : {_}\nLOTO!!!\n")
-        else:
-            continue
     return listeVT
 
 
@@ -86,19 +82,28 @@ def exBinaire(liste):
         f.write(bytes(binary_data, "latin1"))
 
 
-def exprotation2Formats(liste):
-    return exCsv(liste), exJson(liste), exBinaire(liste)
+def imBinaire():
+    filepath = Path('loto/exportBIN.bin')
+    with open(filepath, 'rb') as f:
+        binary_data = f.read()
+    binary_lists = [binary_data[i:i+8] for i in range(0, len(binary_data), 8)]
+    int_array = [int(x, 2) for x in binary_lists]
+    liste = list(itertools.groupby(int_array, lambda x: int_array.index(x)//8))
+    return liste
+    
+
+def expimpormats(liste):
+    return exCsv(liste), exJson(liste), exBinaire(liste), imBinaire()
 
 
-def histogramme(tab):
-    tabu = list(itertools.chain(*tab))
-    n = min(tabu)
+def histogramme(liste):
+    n = min(liste)
     print("| VALEUR | OCCURENCE(s) |")
 
-    while n <= max(tabu)+1:
+    while n <= max(liste)+1:
         v = 0
-        for _ in range(len(tabu)):
-            if tabu[_] == n:
+        for _ in range(len(liste)):
+            if liste[_] == n:
                 v += 1
             else:
                 continue
@@ -109,10 +114,27 @@ def histogramme(tab):
         n += 1
 
 
+def histoGraph(liste):
+    plt.hist(liste, bins=5, color='purple', edgecolor='black', alpha=0.7)
+    plt.title("Histogramme", fontsize=14, fontweight='bold')
+    plt.xlabel("Valeur", fontsize=12)
+    plt.ylabel("Fréquence", fontsize=12)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.grid(visible=True, alpha=0.3)
+    plt.show()
+
+
+def doHistogram(liste):
+    liste1 = list(itertools.chain(*liste))
+    histogramme(liste1)
+    histoGraph(liste1)
+
+
 def process():
     LISTETIR = jeu_loto()
-    exprotation2Formats(LISTETIR)
-    histogramme(LISTETIR)
+    expimpormats(LISTETIR)
+    doHistogram(LISTETIR)
 
 
 process()
