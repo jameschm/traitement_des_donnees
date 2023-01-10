@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 # pour iterer des listes dans des listes
 import itertools
+#importer matplotlib pour l'histogramme
+import matplotlib as mp
 
 
 # création d'une fonction pour le loto
@@ -38,6 +40,20 @@ def jeu_loto():
         else:
             continue
     return listeVT
+
+
+# créer une fonction qui détermine les occurences entres 2 listes
+def trouve_occurences(liste1, liste2):
+    # créer une liste afin de mettre les nombres qui sont présents dans les deux listes si il y en a
+    resultat = []
+    # créer une boucle qui donne une valeur dans la liste1
+    for _ in liste1:
+        # créer une condition qui cherche si la valeur de la liste 1 est dans la liste2
+        if _ in liste2:
+            # ajoute la valeur présente dans la liste resultat si elle est présente
+            resultat.append(_)
+    # donne en retour la liste avec les occurences
+    return resultat
 
 
 def exCsv(liste):
@@ -74,20 +90,6 @@ def exprotation2Formats(liste):
     return exCsv(liste), exJson(liste), exBinaire(liste)
 
 
-# créer une fonction qui détermine les occurences entres 2 listes
-def trouve_occurences(liste1, liste2):
-    # créer une liste afin de mettre les nombres qui sont présents dans les deux listes si il y en a
-    resultat = []
-    # créer une boucle qui donne une valeur dans la liste1
-    for _ in liste1:
-        # créer une condition qui cherche si la valeur de la liste 1 est dans la liste2
-        if _ in liste2:
-            # ajoute la valeur présente dans la liste resultat si elle est présente
-            resultat.append(_)
-    # donne en retour la liste avec les occurences
-    return resultat
-
-
 def histogramme(tab):
     tabu = list(itertools.chain(*tab))
     n = min(tabu)
@@ -105,8 +107,6 @@ def histogramme(tab):
         else:
             pass
         n += 1
-
-# exécution du jeu avec la liste du joueur en argument créer au début du script
 
 
 def process():
