@@ -26,9 +26,8 @@ def jeu_loto():
     # créer une boucle pour faire les différents tirages en fonction du nombre donné par l'utilisateur
     for _ in range(nbTirage):
 
-        # créer une liste avec les nombres utilisés par le tirage
-        listTirage = [np.random.randint(1, 46) for _ in range(5)]
-        triCocktail(listTirage)
+        # créer une liste avec les nombres utilisés par le tirage et le tri dans un ordre croissant avec le tri fusion
+        listTirage = tri_fusion([np.random.randint(1, 46) for _ in range(5)])
         # ajout de la liste listeTirage dans la liste listeVT
         listeVT.append(listTirage)
         # cherche les occurences entre les 2 listes avec la fonction trouve_occurences
@@ -95,7 +94,9 @@ def imBinaire():
     binary_lists = [binary_data[i:i+8] for i in range(0, len(binary_data), 8)]
     int_array = [int(x, 2) for x in binary_lists]
     sous_listes = [int_array[i:i+5] for i in range(0, len(int_array), 5)]
-    return sous_listes
+    filepath = Path('loto/importBIN.txt')
+    with open(filepath, 'w') as f:
+        return f.write(str(sous_listes))
 
 
 # création de la fonction de lancement de la sauvegarde et chargement
@@ -162,44 +163,26 @@ def triCocktail(liste):
     return liste
 
 
-# création de la fonction pour effectuer un tri fusion
-def triFusion(lst):
-    # Si la liste ne contient qu'un élément, elle est déjà triée
-    if len(lst) <= 1:
-        return lst
-
-    # Détermine le milieu de la liste
-    mid = len(lst) // 2
-
-    # Tri la première moitié de la liste
-    left = triFusion(lst[:mid])
-
-    # Tri la seconde moitié de la liste
-    right = triFusion(lst[mid:])
-
-    # Fusionne les deux moitiés triées
-    return merge(left, right)
-
-
-# création de la fonction pour effectuer un tri fusion
-def merge(left, right):
-    # Initialise la liste qui contiendra les éléments fusionnés
-    merged = []
-    # Initialise les indices des éléments à comparer dans chaque liste
-    left_index = 0
-    right_index = 0
-    # Tant que les deux listes ne sont pas vides, compare les éléments et ajoute le plus petit à la liste fusionnée
-    while left_index < len(left) and right_index < len(right):
-        if left[left_index] < right[right_index]:
-            merged.append(left[left_index])
-            left_index += 1
+def interclassement(lst1, lst2):
+    lst_totale = []
+    n1, n2 = len(lst1), len(lst2)
+    i1, i2 = 0, 0
+    while i1 < n1 and i2 < n2:
+        if lst1[i1] < lst2[i2]:
+            lst_totale.append(lst1[i1])
+            i1 += 1
         else:
-            merged.append(right[right_index])
-            right_index += 1
-    # Ajoute les éléments restants de la liste la plus longue à la liste fusionnée
-    merged.extend(left[left_index:])
-    merged.extend(right[right_index:])
-    return merged
+            lst_totale.append(lst2[i2])
+            i2 += 1
+    return lst_totale + lst1[i1:] + lst2[i2:]
+
+
+def tri_fusion(liste):
+    if len(liste) <= 1:
+        return liste
+    else:
+        m = len(liste) // 2
+        return interclassement(tri_fusion(liste[:m]), tri_fusion(liste[m:]))
 
 
 # création de la fonction pour le lancement du programme
