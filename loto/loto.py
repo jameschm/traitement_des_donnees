@@ -58,7 +58,7 @@ def exCsv(liste):
     # ajout des données dans pandas
     df = pd.DataFrame(liste)
     # conversion en csv
-    filepath = Path('loto/exportCSV.csv')
+    filepath = Path('loto/sauvegarde_loto/exportCSV.csv')
     filepath.parent.mkdir(parents=True, exist_ok=True)
     return df.to_csv(filepath)
 
@@ -68,7 +68,7 @@ def exJson(liste):
 
     df = pd.DataFrame(
         liste, columns=['PREMIER', 'DEXIEME', 'TROISIEME', 'QUATRIEME', 'CINQUIEME'])
-    filepath = Path('loto/exportJSON.json')
+    filepath = Path('loto/sauvegarde_loto/exportJSON.json')
     filepath.parent.mkdir(parents=True, exist_ok=True)
     return df.to_json(filepath, orient='columns')
 
@@ -78,7 +78,7 @@ def exBinaire(liste):
     int_array = list(itertools.chain(*liste))
     binary_lists = [np.binary_repr(x, width=8) for x in int_array]
     binary_data = "".join(binary_lists)
-    filepath = Path('loto/exportBIN.bin')
+    filepath = Path('loto/sauvegarde_loto/exportBIN.bin')
     filepath.parent.mkdir(parents=True, exist_ok=True)
     with open(filepath, "wb") as f:
         f.write(bytes(binary_data, "latin1"))
@@ -86,13 +86,13 @@ def exBinaire(liste):
 
 # création de la fonction chargement binaire
 def imBinaire():
-    filepath = Path('loto/exportBIN.bin')
+    filepath = Path('loto/sauvegarde_loto/exportBIN.bin')
     with open(filepath, 'rb') as f:
         binary_data = f.read()
     binary_lists = [binary_data[i:i+8] for i in range(0, len(binary_data), 8)]
     int_array = [int(x, 2) for x in binary_lists]
     sous_listes = [int_array[i:i+5] for i in range(0, len(int_array), 5)]
-    filepath = Path('loto/importBIN.txt')
+    filepath = Path('loto/sauvegarde_loto/importBIN.txt')
     with open(filepath, 'w') as f:
         return f.write(str(sous_listes))
 
@@ -127,7 +127,7 @@ def histogramme(liste):
 
 # création de la fonction de création de l'histogramme graphique
 def histoGraph(liste):
-    plt.hist(liste, bins=5, color='purple', edgecolor='black', alpha=0.7)
+    plt.hist(liste, bins=45, color='purple', edgecolor='black', alpha=0.7)
     plt.title("Histogramme", fontsize=14, fontweight='bold')
     plt.xlabel("Valeur", fontsize=12)
     plt.ylabel("Fréquence", fontsize=12)
