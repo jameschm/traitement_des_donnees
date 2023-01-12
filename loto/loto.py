@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # création d'une fonction pour le loto
 def jeu_loto():
     # Commence par modifier la graine aléatoire pour qu'elle soit uniforme
-    np.random.seed(50)
+    np.random.seed(10)
     # Définie les numéros que le joueur joue pour le(s) tirage(s) et donc reste contant
     lotoJoueur = [np.random.randint(1, 46) for _ in range(5)]
     triCocktail(lotoJoueur)
@@ -107,7 +107,7 @@ def expimpormats(liste):
 # création de la fonction de création de l'histogramme dans le shell
 def histogramme(liste):
     n = min(liste)
-    print("| VALEUR | OCCURENCE(s) |")
+    print("\n\n\n| VALEUR | OCCURENCE(s) | HISTOGRAMME |", end='')
 
     while n <= max(liste)+1:
         v = 0
@@ -116,8 +116,11 @@ def histogramme(liste):
                 v += 1
             else:
                 continue
+        r = v / len(liste)*2000
         if v >= 1:
-            print(f"| {n} | {v} |")
+            print(f"\n\n| {n} | {v} | : ")
+            for _ in range(int(r)):
+                print("#", end='')
         else:
             pass
         n += 1
