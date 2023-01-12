@@ -16,6 +16,7 @@ def jeu_loto():
     np.random.seed(50)
     # Définie les numéros que le joueur joue pour le(s) tirage(s) et donc reste contant
     lotoJoueur = [np.random.randint(1, 46) for _ in range(5)]
+    triCocktail(lotoJoueur)
     # affiche les numéros du joueur
     print(f"\nLes bon numeros du loto sont : {lotoJoueur}")
     listeVT = []
@@ -27,6 +28,7 @@ def jeu_loto():
 
         # créer une liste avec les nombres utilisés par le tirage
         listTirage = [np.random.randint(1, 46) for _ in range(5)]
+        triCocktail(listTirage)
         # ajout de la liste listeTirage dans la liste listeVT
         listeVT.append(listTirage)
         # cherche les occurences entre les 2 listes avec la fonction trouve_occurences
@@ -52,6 +54,7 @@ def trouve_occurences(liste1, liste2):
     return resultat
 
 
+# création de la fonction sauvegarde csv
 def exCsv(liste):
     # ajout des données dans pandas
     df = pd.DataFrame(liste)
@@ -62,6 +65,7 @@ def exCsv(liste):
     return df.to_csv(filepath)
 
 
+# création de la fonction sauvegarde json
 def exJson(liste):
 
     df = pd.DataFrame(
@@ -72,6 +76,7 @@ def exJson(liste):
     return df.to_json(filepath, orient='columns')
 
 
+# création de la fonction sauvegarde binaire
 def exBinaire(liste):
     int_array = list(itertools.chain(*liste))
     binary_lists = [np.binary_repr(x, width=8) for x in int_array]
@@ -82,6 +87,7 @@ def exBinaire(liste):
         f.write(bytes(binary_data, "latin1"))
 
 
+# création de la fonction chargement binaire
 def imBinaire():
     filepath = Path('loto/exportBIN.bin')
     with open(filepath, 'rb') as f:
@@ -90,12 +96,14 @@ def imBinaire():
     int_array = [int(x, 2) for x in binary_lists]
     liste = list(itertools.groupby(int_array, lambda x: int_array.index(x)//8))
     return liste
-    
 
+
+# création de la fonction de lancement de la sauvegarde et chargement
 def expimpormats(liste):
     return exCsv(liste), exJson(liste), exBinaire(liste), imBinaire()
 
 
+# création de la fonction de création de l'histogramme dans le shell
 def histogramme(liste):
     n = min(liste)
     print("| VALEUR | OCCURENCE(s) |")
@@ -114,6 +122,7 @@ def histogramme(liste):
         n += 1
 
 
+# création de la fonction de création de l'histogramme graphique
 def histoGraph(liste):
     plt.hist(liste, bins=5, color='purple', edgecolor='black', alpha=0.7)
     plt.title("Histogramme", fontsize=14, fontweight='bold')
@@ -125,16 +134,80 @@ def histoGraph(liste):
     plt.show()
 
 
+# création de la fonction de lancement des histogrammes
 def doHistogram(liste):
     liste1 = list(itertools.chain(*liste))
     histogramme(liste1)
     histoGraph(liste1)
 
 
+# création de la fonction pour effectuer un tri cocktaik
+def triCocktail(liste):
+    debut = 0
+    fin = len(liste) - 1
+    while debut < fin:
+        echange = False
+        for _ in range(debut, fin):
+            if liste[_] > liste[_+1]:
+                liste[_], liste[_+1] = liste[_+1], liste[_]
+            echange = True
+        fin -= 1
+        if not echange:
+            break
+        for _ in range(fin-1, debut-1, -1):
+            if liste[_] > liste[_+1]:
+                liste[_], liste[_+1] = liste[_+1], liste[_]
+            echange = True
+        debut += 1
+    return liste
+
+
+# création de la fonction pour effectuer un tri fusion
+def triFusion(lst):
+    # Si la liste ne contient qu'un élément, elle est déjà triée
+    if len(lst) <= 1:
+        return lst
+
+    # Détermine le milieu de la liste
+    mid = len(lst) // 2
+
+    # Tri la première moitié de la liste
+    left = triFusion(lst[:mid])
+
+    # Tri la seconde moitié de la liste
+    right = triFusion(lst[mid:])
+
+    # Fusionne les deux moitiés triées
+    return merge(left, right)
+
+
+# création de la fonction pour effectuer un tri fusion
+def merge(left, right):
+    # Initialise la liste qui contiendra les éléments fusionnés
+    merged = []
+    # Initialise les indices des éléments à comparer dans chaque liste
+    left_index = 0
+    right_index = 0
+    # Tant que les deux listes ne sont pas vides, compare les éléments et ajoute le plus petit à la liste fusionnée
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] < right[right_index]:
+            merged.append(left[left_index])
+            left_index += 1
+        else:
+            merged.append(right[right_index])
+            right_index += 1
+    # Ajoute les éléments restants de la liste la plus longue à la liste fusionnée
+    merged.extend(left[left_index:])
+    merged.extend(right[right_index:])
+    return merged
+
+
+# création de la fonction pour le lancement du programme
 def process():
     LISTETIR = jeu_loto()
     expimpormats(LISTETIR)
     doHistogram(LISTETIR)
 
 
+# lancement du programme
 process()
