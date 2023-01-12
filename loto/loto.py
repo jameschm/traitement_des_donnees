@@ -165,6 +165,7 @@ def triCocktail(liste):
     return liste
 
 
+# création de la fonction pour effectuer un tri fusion par interclassement
 def interclassement(lst1, lst2):
     lst_totale = []
     n1, n2 = len(lst1), len(lst2)
@@ -179,6 +180,7 @@ def interclassement(lst1, lst2):
     return lst_totale + lst1[i1:] + lst2[i2:]
 
 
+# création de la fonction pour effectuer un tri fusion
 def tri_fusion(liste):
     if len(liste) <= 1:
         return liste
