@@ -94,8 +94,8 @@ def imBinaire():
         binary_data = f.read()
     binary_lists = [binary_data[i:i+8] for i in range(0, len(binary_data), 8)]
     int_array = [int(x, 2) for x in binary_lists]
-    liste = list(itertools.groupby(int_array, lambda x: int_array.index(x)//8))
-    return liste
+    sous_listes = [int_array[i:i+5] for i in range(0, len(int_array), 5)]
+    return sous_listes
 
 
 # création de la fonction de lancement de la sauvegarde et chargement
