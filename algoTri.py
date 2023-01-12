@@ -1,3 +1,5 @@
+#-----------------------TRI PAR INSERTION-----------------------#
+
 def triInsersion(lst):
     for i in range(1, len(lst)):
         j = i
@@ -6,6 +8,7 @@ def triInsersion(lst):
         j -= 1
     return lst
 
+#-----------------------TRI COCKTAIL-----------------------#
 
 def triCocktail(liste):
     debut = 0
@@ -26,6 +29,7 @@ def triCocktail(liste):
         debut += 1
     return liste
 
+#-----------------------TRI FUSION-----------------------#
 
 def triFusion(lst):
     # Si la liste ne contient qu'un élément, elle est déjà triée
