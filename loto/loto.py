@@ -57,7 +57,6 @@ def trouve_occurences(liste1, liste2):
 def exCsv(liste):
     # ajout des données dans pandas
     df = pd.DataFrame(liste)
-    print(df)
     # conversion en csv
     filepath = Path('loto/exportCSV.csv')
     filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -69,7 +68,6 @@ def exJson(liste):
 
     df = pd.DataFrame(
         liste, columns=['PREMIER', 'DEXIEME', 'TROISIEME', 'QUATRIEME', 'CINQUIEME'])
-    print(df)
     filepath = Path('loto/exportJSON.json')
     filepath.parent.mkdir(parents=True, exist_ok=True)
     return df.to_json(filepath, orient='columns')
@@ -107,7 +105,7 @@ def expimpormats(liste):
 # création de la fonction de création de l'histogramme dans le shell
 def histogramme(liste):
     n = min(liste)
-    print("\n\n\n| VALEUR | OCCURENCE(s) | HISTOGRAMME |", end='')
+    print("\n| VALEUR | OCCURENCE(s) | HISTOGRAMME |\n\n", end='')
 
     while n <= max(liste)+1:
         v = 0
@@ -118,9 +116,10 @@ def histogramme(liste):
                 continue
         r = v / len(liste)*2000
         if v >= 1:
-            print(f"\n\n| {n} | {v} | : ")
+            print(f"| {n} | {v} | : ")
             for _ in range(int(r)):
-                print("#", end='')
+                print("*", end='')
+            print("\n")
         else:
             pass
         n += 1
